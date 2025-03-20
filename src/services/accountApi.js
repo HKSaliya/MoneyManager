@@ -70,7 +70,7 @@ export const addWallet = async (walletData) => {
 
 //delete wallet
 export const deleteWallet = async (id) => {
-    await api.delete(`/wallet/deleteWallet/${id}`);
+    await api.delete(`/wallets/deleteWallet/${id}`);
 }
 
 // Update Wallet Balance

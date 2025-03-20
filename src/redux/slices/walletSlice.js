@@ -1,4 +1,4 @@
-import { addWallet, getWallets, updateWalletBalance } from "@/src/services/accountApi";
+import { addWallet, getWallets, updateWalletBalance, deleteWallet } from "@/src/services/accountApi";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // Fetch Wallets
@@ -29,11 +29,23 @@ export const createWallet = createAsyncThunk(
 export const modifyWalletBalance = createAsyncThunk(
     "wallet/updateWalletBalance",
     async ({ walletId, amount }, { rejectWithValue }) => {
-        console.log(walletId, amount, "wallet info")
         try {
             return await updateWalletBalance(walletId, amount);
         } catch (error) {
             return rejectWithValue(error.response?.data || "Error updating balance");
+        }
+    }
+);
+
+// Delete Wallet
+export const removeWallet = createAsyncThunk(
+    "wallet/removeWallet",
+    async (walletId, { rejectWithValue }) => {
+        try {
+            await deleteWallet(walletId);
+            return walletId;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || "Error deleting wallet");
         }
     }
 );
@@ -67,6 +79,9 @@ const walletSlice = createSlice({
                 if (index !== -1) {
                     state.wallets[index] = action.payload;
                 }
+            })
+            .addCase(removeWallet.fulfilled, (state, action) => {
+                state.wallets = state.wallets.filter(wallet => wallet._id !== action.payload);
             });
     },
 });

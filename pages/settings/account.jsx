@@ -66,7 +66,7 @@ const Account = () => {
 
     return (
         <Layout className="min-h-screen p-6">
-            <div className="border border-red-500 h-full p-6">
+            <div className=" h-full p-6">
                 <h2 className="text-2xl mb-4">Account Settings</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>

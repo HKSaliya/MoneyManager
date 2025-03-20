@@ -6,6 +6,7 @@ import { fetchExpenseCategories, fetchIncomeCategories } from "@/src/redux/slice
 import TransactionForm from "@/components/TransactionForm";
 import { useRouter } from "next/router";
 import { FaUtensils, FaBus, FaFilm, FaShoppingCart, FaChevronDown } from "react-icons/fa";
+import NavBar from "@/components/NavBar";
 
 // Predefined options
 const ICONS = [
@@ -68,75 +69,78 @@ const WalletDetail = () => {
     const selectedWallet = wallets.find(wallet => wallet._id === walletId);
 
     return (
-        <div className="min-h-screen p-8 lg:p-16">
-            <div className="flex items-center justify-between">
-                {selectedWallet ? (
-                    <div key={selectedWallet._id} className="border p-2 mb-2">
-                        <h3 className="font-semibold">{selectedWallet.name}</h3>
-                        <div><span>Balance :</span> ₹{selectedWallet.balance}</div>
+        <>
+            <NavBar />
+            <div className="min-h-screen p-8 lg:p-16">
+                <div className="flex items-center justify-between">
+                    {selectedWallet ? (
+                        <div key={selectedWallet._id} className="border p-2 mb-2">
+                            <h3 className="font-semibold">{selectedWallet.name}</h3>
+                            <div><span>Balance :</span> ₹{selectedWallet.balance}</div>
+                        </div>
+                    ) : (
+                        <p>No wallet found.</p> // Message if wallet doesn't exist
+                    )}
+
+                    <div className="flex gap-4 mt-4">
+                        <input type="date" name="startDate" value={dateRange.startDate} onChange={handleDateChange} className="border p-2" />
+                        <input type="date" name="endDate" value={dateRange.endDate} onChange={handleDateChange} className="border p-2" />
+                        <button
+                            onClick={applyDateFilter}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                        >
+                            Apply
+                        </button>
                     </div>
-                ) : (
-                    <p>No wallet found.</p> // Message if wallet doesn't exist
+                </div>
+
+                <button
+                    onClick={() => setShowForm(true)}
+                    className="bg-green-500 text-white p-2 mt-6 rounded-md"
+                >
+                    Add Transaction
+                </button>
+
+                {showForm && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
+                        onClick={() => setShowForm(false)}
+                    >
+                        <div
+                            className="bg-white p-6 rounded-lg shadow-lg relative"
+                            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the form
+                        >
+                            <TransactionForm onClose={() => setShowForm(false)} dateRange={dateRange} WalletId={walletId} />
+                        </div>
+                    </div>
                 )}
 
-                <div className="flex gap-4 mt-4">
-                    <input type="date" name="startDate" value={dateRange.startDate} onChange={handleDateChange} className="border p-2" />
-                    <input type="date" name="endDate" value={dateRange.endDate} onChange={handleDateChange} className="border p-2" />
-                    <button
-                        onClick={applyDateFilter}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                    >
-                        Apply
-                    </button>
-                </div>
-            </div>
+                <h2 className="mt-6">Transactions</h2>
+                {transactions.length > 0 ? (
+                    <ul className="mt-4">
+                        {transactions.map((transaction) => {
+                            // Find the corresponding icon from the ICONS array
+                            const matchingIcon = ICONS.find(icon => icon.name === transaction.category.icon);
 
-            <button
-                onClick={() => setShowForm(true)}
-                className="bg-green-500 text-white p-2 mt-6 rounded-md"
-            >
-                Add Transaction
-            </button>
+                            return (
+                                <li key={transaction._id} className="border p-2 mb-2">
+                                    <div className="text-sm font-medium"> {new Date(transaction.date).toLocaleDateString()}</div>
 
-            {showForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
-                    onClick={() => setShowForm(false)}
-                >
-                    <div
-                        className="bg-white p-6 rounded-lg shadow-lg relative"
-                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the form
-                    >
-                        <TransactionForm onClose={() => setShowForm(false)} dateRange={dateRange} WalletId={walletId} />
-                    </div>
-                </div>
-            )}
-
-            <h2 className="mt-6">Transactions</h2>
-            {transactions.length > 0 ? (
-                <ul className="mt-4">
-                    {transactions.map((transaction) => {
-                        // Find the corresponding icon from the ICONS array
-                        const matchingIcon = ICONS.find(icon => icon.name === transaction.category.icon);
-
-                        return (
-                            <li key={transaction._id} className="border p-2 mb-2">
-                                <div className="text-sm font-medium"> {new Date(transaction.date).toLocaleDateString()}</div>
-
-                                <div className="flex gap-4 justify-between ">
-                                    <div className="text-xl flex gap-4 items-center">
-                                        {matchingIcon ? <matchingIcon.component color={transaction.category.color} /> : "❓"} {/* Show icon if found, otherwise show a placeholder */}
-                                        <strong>{transaction.label}</strong>
+                                    <div className="flex gap-4 justify-between ">
+                                        <div className="text-xl flex gap-4 items-center">
+                                            {matchingIcon ? <matchingIcon.component color={transaction.category.color} /> : "❓"} {/* Show icon if found, otherwise show a placeholder */}
+                                            <strong>{transaction.label}</strong>
+                                        </div>
+                                        <div className={`${transaction.category.type === "expense" ? "text-red-500" : "text-green-500"} font-semibold text-lg`}>₹{transaction.amount}</div>
                                     </div>
-                                    <div className={`${transaction.category.type === "expense" ? "text-red-500" : "text-green-500"} font-semibold text-lg`}>₹{transaction.amount}</div>
-                                </div>
-                            </li>
-                        );
-                    })}
-                </ul>
-            ) : (
-                <p>No transactions found.</p>
-            )}
-        </div>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                ) : (
+                    <p>No transactions found.</p>
+                )}
+            </div>
+        </>
     );
 };
 
