@@ -16,7 +16,7 @@ const NavBar = () => {
     return (
         <div className="w-full">
             <div className='grid grid-cols-2 min-h-4 px-8 py-4 items-center justify-center'>
-                <div onClick={() => router.push('/dashboard')}>Logo</div>
+                <div className="cursor-pointer" onClick={() => router.push('/dashboard')}>Logo</div>
                 <div className='flex gap-2 justify-end items-center'>
                     <img src={user?.avatar?.url || blankProfile} alt="" className="rounded-full w-12 h-12" />
                     <div>{user?.firstName || ""}</div>

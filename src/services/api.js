@@ -1,4 +1,5 @@
 import axios from "axios";
+// import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:5000/app";
 
@@ -19,6 +20,18 @@ api.interceptors.request.use(
         return config;
     },
     (error) => Promise.reject(error)
+);
+
+// Response interceptor to handle token expiration
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token"); // Remove expired token
+            window.location.href = "/login"; // Redirect to login page
+        }
+        return Promise.reject(error);
+    }
 );
 
 export default api;
