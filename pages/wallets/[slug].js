@@ -31,6 +31,8 @@ const WalletDetail = () => {
 
     const { wallets, loading: walletsLoading } = useSelector((state) => state.wallet);
     const { filteredItems: transactions, status } = useSelector((state) => state.transactions);
+    // Filter transactions based on walletId
+    const filteredTransactions = transactions.filter(transaction => transaction.wallet === walletId);
 
     const today = new Date().toISOString().split("T")[0];
     const [dateRange, setDateRange] = useState({ startDate: today, endDate: today });
@@ -115,9 +117,9 @@ const WalletDetail = () => {
                 )}
 
                 <h2 className="mt-6">Transactions</h2>
-                {transactions.length > 0 ? (
+                {filteredTransactions.length > 0 ? (
                     <ul className="mt-4">
-                        {transactions.map((transaction) => {
+                        {filteredTransactions.map((transaction) => {
                             // Find the corresponding icon from the ICONS array
                             const matchingIcon = ICONS.find(icon => icon.name === transaction.category.icon);
 
