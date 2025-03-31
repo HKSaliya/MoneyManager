@@ -34,8 +34,11 @@ const WalletDetail = () => {
     // Filter transactions based on walletId
     const filteredTransactions = transactions.filter(transaction => transaction.wallet === walletId);
 
-    const today = new Date().toISOString().split("T")[0];
-    const [dateRange, setDateRange] = useState({ startDate: today, endDate: today });
+    const today = new Date();
+    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split("T")[0];
+    const currentDay = today.toISOString().split("T")[0];
+
+    const [dateRange, setDateRange] = useState({ startDate: firstDayOfMonth, endDate: currentDay });
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {

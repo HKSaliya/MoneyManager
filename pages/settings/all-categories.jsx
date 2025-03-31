@@ -110,13 +110,6 @@ const allcategories = () => {
 
     return (
         <Layout className='min-h-screen p-6'>
-            <div className='grid grid-cols-2 min-h-4 items-center justify-center'>
-                <div>Logo</div>
-                <div className='text-right'>
-                    <div>image</div>
-                    <div>name</div>
-                </div>
-            </div>
             <form onSubmit={handleSubmit} className="mx-auto p-4 bg-white shadow-md rounded-lg">
                 <h2 className='font-semibold text-lg'>Create a new category</h2>
                 <div className='w-full flex justify-center gap-4'>

@@ -5,6 +5,7 @@ import blankProfile from './../../src/assets/blankprofile.png';
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, updateUser } from '@/src/redux/slices/accountSlice';
 import { useRouter } from 'next/router';
+import withAuth from '../hoc/withAuth';
 
 const Account = () => {
     const router = useRouter();
@@ -118,4 +119,4 @@ const Account = () => {
     );
 };
 
-export default Account;
+export default withAuth(Account);

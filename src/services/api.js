@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://localhost:5000/app";
 
@@ -22,15 +21,17 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle token expiration
+// Response interceptor to handle token expiration and errors
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token"); // Remove expired token
-            window.location.href = "/login"; // Redirect to login page
+        if (error.response) {
+            if (error.response.status === 401) {
+                localStorage.removeItem("token"); // Remove expired token
+                window.location.href = "/login"; // Redirect to login page
+            }
         }
-        return Promise.reject(error);
+        return Promise.reject(error); // Pass the error for further handling
     }
 );
 
