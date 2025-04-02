@@ -1,34 +1,37 @@
 import { getUser } from '@/src/redux/slices/accountSlice';
 import { fetchWallets } from '@/src/redux/slices/walletSlice';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import blankProfile from './../src/assets/blankprofile.png';
 import { FaWallet } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
-import logo from './../src/assets/ChatGPT_Image_Mar_31__2025__12_19_45_PM-removebg-preview.png'
+import logo from './../src/assets/ChatGPT_Image_Mar_31__2025__12_19_45_PM-removebg-preview.png';
 import Image from "next/image";
 import LineChart from './components/LineChart';
 import { fetchTransactions, filterTransactions } from '@/src/redux/slices/transactionSlice';
 
-const dashbord = () => {
+const Dashboard = () => {
     const [timeframe, setTimeframe] = useState('month');
     const router = useRouter();
     const dispatch = useDispatch();
-    const { wallets, loading, error } = useSelector((state) => state.wallet);
-    const { filteredItems: transactions, status } = useSelector((state) => state.transactions);
-    const { user } = useSelector((state) => state.account);
+    const { wallets, loading: walletsLoading, error: walletsError } = useSelector((state) => state.wallet);
+    const { filteredItems: transactions, status: transactionsStatus } = useSelector((state) => state.transactions);
+    const { user, status: userStatus } = useSelector((state) => state.account);
+
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split("T")[0];
     const currentDay = today.toISOString().split("T")[0];
     const [dateRange, setDateRange] = useState({ startDate: firstDayOfMonth, endDate: currentDay });
+
     useEffect(() => {
-        dispatch(fetchWallets());
-        dispatch(getUser());
+        if (userStatus === 'idle') dispatch(getUser());
+        if (wallets.length === 0) dispatch(fetchWallets());
         dispatch(fetchTransactions()).then(() => {
             dispatch(filterTransactions(dateRange));
         });
-    }, [dispatch]);
+    }, [dispatch, userStatus, wallets.length, dateRange]);
+
     return (
         <div className='min-h-screen'>
             <div className='grid grid-cols-3 items-center justify-center px-8 py-4'>
@@ -61,44 +64,49 @@ const dashbord = () => {
                         </button>
                     </div>
                 </div>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                    {wallets.map((wallet) => {
-                        const walletTransactions = transactions.filter(
-                            (t) => t.wallet === wallet._id
-                        );
-
-                        return (
-                            <div key={wallet._id}
-                                className='bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow'
-                            >
-                                <Link href={`/wallets/${wallet._id}`} className="block mb-4">
-                                    <h3 className="font-semibold flex items-center gap-2 text-xl">
-                                        <FaWallet className='w-6 h-6' />{wallet.name}
-                                    </h3>
-                                    <p className='text-gray-600 mt-2'>
-                                        Balance: ₹{wallet.balance.toLocaleString()}
-                                    </p>
-                                </Link>
-
-                                <div className='h-64'>
-                                    <p onClick={() => console.log(wallet)}>transaction</p>
-                                    <LineChart
-                                        transactions={walletTransactions}
-                                        timeframe={timeframe}
-                                        currentBalance={wallet.balance}
-                                    />
+                {walletsLoading ? (
+                    <p className='text-center text-gray-500'>Loading wallets...</p>
+                ) : walletsError ? (
+                    <p className='text-center text-red-500'>Error loading wallets</p>
+                ) : (
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12'>
+                        {wallets.map((wallet) => {
+                            const walletTransactions = transactions.filter(
+                                (t) => t.wallet === wallet._id
+                            );
+                            return (
+                                <div key={wallet._id}
+                                    className='bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow'
+                                >
+                                    <Link href={`/wallets/${wallet._id}`} className="block mb-4">
+                                        <h3 className="font-semibold flex items-center gap-2 text-xl">
+                                            <FaWallet className='w-6 h-6' />{wallet.name}
+                                        </h3>
+                                        <p className='text-gray-600 mt-2'>
+                                            Balance: ₹{wallet.balance.toLocaleString()}
+                                        </p>
+                                    </Link>
+                                    <div className='h-64'>
+                                        <p>Transaction</p>
+                                        <LineChart
+                                            // transactions={walletTransactions}
+                                            // timeframe={timeframe}
+                                            // currentBalance={wallet.balance}
+                                            walletId={wallet._id}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                            );
+                        })}
+                    </div>
+                )}
 
-                {wallets.length === 0 && (
+                {wallets.length === 0 && !walletsLoading && (
                     <p className='text-center text-gray-500 mt-8'>No wallets found. Create one to get started!</p>
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default dashbord
+export default Dashboard;

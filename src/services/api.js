@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000/app";
+// const API_BASE_URL = "http://localhost:5000/app";
+const API_BASE_URL = "https://moneymanager-backend-swzk.onrender.com/app";
 
 const api = axios.create({
     baseURL: API_BASE_URL,

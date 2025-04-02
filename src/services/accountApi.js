@@ -1,5 +1,23 @@
 import api from "./api";
 
+// Login
+export const loginUser = async (email, password) => {
+    const response = await api.post("/auth/login", { email, password });
+    return response.data;
+};
+
+// Forgot Password
+export const forgotPassword = async (email) => {
+    const response = await api.post("/auth/forgot-password", { email });
+    return response.data;
+};
+
+// Reset Password
+export const resetPassword = async (email, otp, newPassword) => {
+    const response = await api.post("/auth/reset-password", { email, otp, newPassword });
+    return response.data;
+};
+
 // Fetch user data
 export const fetchUserData = async () => {
     const response = await api.get("/auth/update");
@@ -102,3 +120,7 @@ export const createTransactionRecord = async (transactionData) => {
     return response.data;
 };
 
+export const getLastWeekBalancesDashbord = async (walletId) => {
+    const response = await api.get(`/wallets/getLastWeekBalances/${walletId}`);
+    return response.data;
+}

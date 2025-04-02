@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { forgotPassword, loginUser, resetPassword } from "@/src/services/accountApi";
 
 export default function Login() {
     const router = useRouter();
@@ -14,8 +15,8 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/app/auth/login", { email, password });
-            localStorage.setItem("token", response.data.token);
+            const data = await loginUser(email, password);
+            localStorage.setItem("token", data.token);
             router.push("/settings/account");
         } catch (error) {
             alert("Login failed");
@@ -25,7 +26,7 @@ export default function Login() {
     const handleForgotPassword = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5000/app/auth/forgot-password", { email });
+            await forgotPassword(email);
             setIsForgotPassword(false);
             setIsResetPassword(true);
             alert("OTP sent to your email");
@@ -37,7 +38,7 @@ export default function Login() {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5000/app/auth/reset-password", { email, otp, newPassword });
+            await resetPassword(email, otp, newPassword);
             alert("Password reset successful");
             setIsResetPassword(false);
         } catch (error) {
