@@ -1,40 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+**# 💰 Money Manager App**
 
-## Getting Started
+A **Next.js-powered Money Manager App** that helps users track their income and expenses efficiently. Users can **register** with their email, **create wallets**, and categorize their transactions for better financial management.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Features  
+✅ **User Authentication** – Register and log in using email.  
+✅ **Wallet Management** – Create multiple wallets to manage finances separately.  
+✅ **Transaction Tracking** – Record income and expenses with custom categories.  
+✅ **Expense Categorization** – Organize transactions by categories for better insights.  
+✅ **Real-time Updates** – View balances and transactions dynamically.  
+
+---
+
+## 🛠 Tech Stack  
+- **Next.js 15** – Fast and optimized frontend  
+- **React 19** – Component-based UI  
+- **Redux Toolkit** – State management  
+- **Tailwind CSS** – Modern UI styling  
+- **NextAuth.js** – Secure authentication  
+- **Chart.js & Recharts** – Visual financial insights  
+
+---
+
+## 📸 Screenshots (Optional)  
+_Add screenshots of your app here to showcase the UI._  
+
+---
+
+## 📦 Installation  
+Clone the repository:
+
+```sh
+git clone https://github.com/your-username/money-manager.git
+cd money-manager
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Install dependencies:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```sh
+npm install
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Run the development server:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```sh
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Deployment  
+Deployed on **Vercel** for seamless performance.  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎯 Future Enhancements  
+- 🔹 Add budget goals and spending limits  
+- 🔹 Implement dark mode  
+- 🔹 Mobile app integration  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📬 Feedback & Contribution  
+Feel free to **fork** this project and contribute! For any suggestions, open an **issue** or **pull request**.  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+💡 **Star this repo** ⭐ if you find it useful!  
+
