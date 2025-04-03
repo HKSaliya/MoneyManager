@@ -1,7 +1,7 @@
 import { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { forgotPassword, loginUser, resetPassword } from "@/src/services/accountApi";
+import { ClipLoader } from "react-spinners";
 
 export default function Login() {
     const router = useRouter();
@@ -11,20 +11,25 @@ export default function Login() {
     const [otp, setOtp] = useState("");
     const [isForgotPassword, setIsForgotPassword] = useState(false);
     const [isResetPassword, setIsResetPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const data = await loginUser(email, password);
             localStorage.setItem("token", data.token);
             router.push("/settings/account");
         } catch (error) {
             alert("Login failed");
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleForgotPassword = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             await forgotPassword(email);
             setIsForgotPassword(false);
@@ -32,17 +37,22 @@ export default function Login() {
             alert("OTP sent to your email");
         } catch (error) {
             alert("Failed to send OTP");
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleResetPassword = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             await resetPassword(email, otp, newPassword);
             alert("Password reset successful");
             setIsResetPassword(false);
         } catch (error) {
             alert("Failed to reset password");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -54,14 +64,14 @@ export default function Login() {
                 </h1>
                 <div className="pb-2">
                     {isResetPassword ? "" : isForgotPassword ? "" : "Don't have an account yet?"}
-                    <button className="underline text-green-500 pl-2" onClick={() => router.push('/signup')}>{isResetPassword ? "" : isForgotPassword ? "" : "Signup Here"}</button>
+                    <button className="underline text-green-500 pl-2" onClick={() => router.push('/signup')}>
+                        {isResetPassword ? "" : isForgotPassword ? "" : "Signup Here"}
+                    </button>
                 </div>
                 {!isForgotPassword && !isResetPassword && (
                     <form onSubmit={handleLogin}>
                         <div className="mb-4">
-                            <label className="block text-gray-700 mb-2" htmlFor="email">
-                                Email
-                            </label>
+                            <label className="block text-gray-700 mb-2" htmlFor="email">Email</label>
                             <input
                                 type="email"
                                 id="email"
@@ -69,12 +79,11 @@ export default function Login() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                disabled={loading}
                             />
                         </div>
                         <div className="mb-6">
-                            <label className="block text-gray-700 mb-2" htmlFor="password">
-                                Password
-                            </label>
+                            <label className="block text-gray-700 mb-2" htmlFor="password">Password</label>
                             <input
                                 type="password"
                                 id="password"
@@ -82,18 +91,21 @@ export default function Login() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                disabled={loading}
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 flex justify-center items-center"
+                            disabled={loading}
                         >
-                            Login
+                            {loading ? <ClipLoader color="#ffffff" size={20} /> : "Login"}
                         </button>
                         <button
                             type="button"
                             className="w-full mt-4 text-blue-500 hover:underline"
                             onClick={() => setIsForgotPassword(true)}
+                            disabled={loading}
                         >
                             Forgot Password?
                         </button>
@@ -103,9 +115,7 @@ export default function Login() {
                 {isForgotPassword && !isResetPassword && (
                     <form onSubmit={handleForgotPassword}>
                         <div className="mb-4">
-                            <label className="block text-gray-700 mb-2" htmlFor="email">
-                                Email
-                            </label>
+                            <label className="block text-gray-700 mb-2" htmlFor="email">Email</label>
                             <input
                                 type="email"
                                 id="email"
@@ -113,18 +123,21 @@ export default function Login() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                disabled={loading}
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 flex justify-center items-center"
+                            disabled={loading}
                         >
-                            Send OTP
+                            {loading ? <ClipLoader color="#ffffff" size={20} /> : "Send OTP"}
                         </button>
                         <button
                             type="button"
                             className="w-full mt-4 text-blue-500 hover:underline"
                             onClick={() => setIsForgotPassword(false)}
+                            disabled={loading}
                         >
                             Back to Login
                         </button>
@@ -134,9 +147,7 @@ export default function Login() {
                 {isResetPassword && (
                     <form onSubmit={handleResetPassword}>
                         <div className="mb-4">
-                            <label className="block text-gray-700 mb-2" htmlFor="otp">
-                                OTP
-                            </label>
+                            <label className="block text-gray-700 mb-2" htmlFor="otp">OTP</label>
                             <input
                                 type="text"
                                 id="otp"
@@ -144,12 +155,11 @@ export default function Login() {
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
                                 required
+                                disabled={loading}
                             />
                         </div>
                         <div className="mb-6">
-                            <label className="block text-gray-700 mb-2" htmlFor="newPassword">
-                                New Password
-                            </label>
+                            <label className="block text-gray-700 mb-2" htmlFor="newPassword">New Password</label>
                             <input
                                 type="password"
                                 id="newPassword"
@@ -157,18 +167,21 @@ export default function Login() {
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 required
+                                disabled={loading}
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 flex justify-center items-center"
+                            disabled={loading}
                         >
-                            Reset Password
+                            {loading ? <ClipLoader color="#ffffff" size={20} /> : "Reset Password"}
                         </button>
                         <button
                             type="button"
                             className="w-full mt-4 text-blue-500 hover:underline"
                             onClick={() => setIsResetPassword(false)}
+                            disabled={loading}
                         >
                             Back to Login
                         </button>
